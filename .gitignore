@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Build output
+build/
+dist/
+
+# Mac system files
+.DS_Store
+
+# Coverage directory
+coverage/
+
+# Optional: static files in public folder (uncomment if needed)
+# public/static/
+
+# Optional: Next.js build output (uncomment if using Next.js)
+# .next/
