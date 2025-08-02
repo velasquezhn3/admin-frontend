@@ -8,6 +8,8 @@ import ReservationsPageSimple from './pages/ReservationsPageSimple';
 import UsersPageSimple from './pages/UsersPageSimple';
 import CabinsPageSimple from './pages/CabinsPageSimple';
 import CalendarPageSimple from './pages/CalendarPageSimple';
+import CalendarPageImproved from './pages/CalendarPageImproved';
+import CalendarFeaturesDemo from './pages/CalendarFeaturesDemo';
 import ReportsPageSimple from './pages/ReportsPageSimple';
 import SettingsPageSimple from './pages/SettingsPageSimple';
 import ActivitiesPage from './pages/ActivitiesPage';
@@ -125,6 +127,8 @@ function App() {
         <Route path="/cabins" element={<PrivateRoute><CabinsPageSimple /></PrivateRoute>} />
         <Route path="/reservations" element={<PrivateRoute><ReservationsPageSimple /></PrivateRoute>} />
         <Route path="/calendar" element={<PrivateRoute><CalendarPageSimple /></PrivateRoute>} />
+        <Route path="/calendar-improved" element={<PrivateRoute><CalendarPageImproved /></PrivateRoute>} />
+        <Route path="/calendar-demo" element={<PrivateRoute><CalendarFeaturesDemo /></PrivateRoute>} />
         <Route path="/reports" element={<PrivateRoute><ReportsPageSimple /></PrivateRoute>} />
         <Route path="/settings" element={<PrivateRoute><SettingsPageSimple /></PrivateRoute>} />
         <Route path="/activities" element={<PrivateRoute><ActivitiesPage /></PrivateRoute>} />

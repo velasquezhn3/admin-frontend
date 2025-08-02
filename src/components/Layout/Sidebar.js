@@ -45,6 +45,13 @@ const menuItems = [
     color: '#f59e0b'
   },
   {
+    text: 'Calendario Mejorado',
+    icon: <CalendarIcon />,
+    path: '/calendar-improved',
+    color: '#f59e0b',
+    badge: 'Nuevo'
+  },
+  {
     text: 'Usuarios',
     icon: <UsersIcon />,
     path: '/users',
