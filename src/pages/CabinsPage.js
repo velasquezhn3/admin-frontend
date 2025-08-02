@@ -3,13 +3,6 @@ import {
   Typography,
   Box,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -19,6 +12,11 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  Chip,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 
@@ -90,7 +88,6 @@ const CabinsPage = () => {
   };
 
   const handleSubmit = async () => {
-    // Basic validation
     if (!form.name || !form.capacity || !form.price) {
       setSnackbar({ open: true, message: 'Por favor completa los campos obligatorios', severity: 'warning' });
       return;
@@ -160,44 +157,50 @@ const CabinsPage = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper} sx={{ mt: 2 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Capacidad</TableCell>
-                <TableCell>Precio</TableCell>
-                <TableCell>Descripción</TableCell>
-                <TableCell>Acciones</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {cabins.map((cabin) => (
-                <TableRow key={cabin.cabin_id}>
-                  <TableCell>{cabin.name}</TableCell>
-                  <TableCell>{cabin.capacity}</TableCell>
-                  <TableCell>${cabin.price}</TableCell>
-                  <TableCell>{cabin.description}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleOpenDialog(cabin)} color="primary">
-                      <Edit />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(cabin.cabin_id)} color="error">
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {cabins.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    No hay cabañas registradas.
-                  </TableCell>
-                </TableRow>
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          {cabins.length === 0 && (
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              No hay cabañas registradas.
+            </Typography>
+          )}
+          {cabins.map((cabin) => (
+            <Card key={cabin.cabin_id} sx={{ maxWidth: 345 }}>
+              {cabin.fotos && cabin.fotos.length > 0 && (
+                <CardMedia
+                  component="img"
+                  height="180"
+                  image={cabin.fotos[0]}
+                  alt={cabin.name}
+                />
               )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              <CardContent>
+                <Typography variant="h6">{cabin.name}</Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Capacidad: {cabin.capacity} personas
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Precio: ${cabin.price}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  {cabin.description}
+                </Typography>
+                <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  {cabin.comodidades && cabin.comodidades.map((amenity, index) => (
+                    <Chip key={index} label={amenity} size="small" />
+                  ))}
+                </Box>
+                <Box sx={{ mt: 1 }}>
+                  <Button size="small" onClick={() => handleOpenDialog(cabin)} startIcon={<Edit />}>
+                    Editar
+                  </Button>
+                  <Button size="small" color="error" onClick={() => handleDelete(cabin.cabin_id)} startIcon={<Delete />}>
+                    Eliminar
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
       )}
 
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
