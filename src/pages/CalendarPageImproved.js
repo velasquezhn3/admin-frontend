@@ -621,7 +621,7 @@ const CalendarPageImproved = () => {
                     </ListItemIcon>
                     <ListItemText 
                       primary="Fecha de la reserva"
-                      secondary={new Date(selectedReservation.fecha).toLocaleDateString('es-AR', {
+                      secondary={new Date(selectedReservation.fecha).toLocaleDateString('es-HN', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',

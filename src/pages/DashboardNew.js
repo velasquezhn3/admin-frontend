@@ -35,12 +35,12 @@ import axios from 'axios';
 
 // Datos de ejemplo para gráficos
 const monthlyReservations = [
-  { name: 'Ene', reservas: 45, ingresos: 125000 },
-  { name: 'Feb', reservas: 52, ingresos: 142000 },
-  { name: 'Mar', reservas: 48, ingresos: 138000 },
-  { name: 'Abr', reservas: 61, ingresos: 168000 },
-  { name: 'May', reservas: 55, ingresos: 155000 },
-  { name: 'Jun', reservas: 67, ingresos: 185000 },
+  { name: 'Ene', reservas: 45, ingresos: 7350 },
+  { name: 'Feb', reservas: 52, ingresos: 8350 },
+  { name: 'Mar', reservas: 48, ingresos: 8120 },
+  { name: 'Abr', reservas: 61, ingresos: 9880 },
+  { name: 'May', reservas: 55, ingresos: 9120 },
+  { name: 'Jun', reservas: 67, ingresos: 10880 },
 ];
 
 const cabinPopularity = [
@@ -61,7 +61,7 @@ const Dashboard = () => {
   const [metrics, setMetrics] = useState({
     reservationsToday: 12,
     occupancyRate: 85,
-    todayRevenue: 45000,
+    todayRevenue: 2650,
     totalUsers: 1247
   });
   const [loading, setLoading] = useState(true);
@@ -102,9 +102,9 @@ const Dashboard = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-AR', {
+    return new Intl.NumberFormat('es-HN', {
       style: 'currency',
-      currency: 'ARS',
+      currency: 'HNL',
       minimumFractionDigits: 0,
     }).format(amount);
   };

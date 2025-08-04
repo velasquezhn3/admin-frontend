@@ -99,9 +99,9 @@ const CalendarPage = () => {
   const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-AR', {
+    return new Intl.NumberFormat('es-HN', {
       style: 'currency',
-      currency: 'ARS',
+      currency: 'HNL',
       minimumFractionDigits: 0,
     }).format(amount);
   };
@@ -249,13 +249,13 @@ const CalendarPage = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                       <EventNote sx={{ fontSize: 16, color: 'text.secondary' }} />
                       <Typography variant="body2">
-                        <strong>Check-in:</strong> {new Date(selectedReservation.startDate).toLocaleDateString('es-AR')}
+                        <strong>Check-in:</strong> {new Date(selectedReservation.startDate).toLocaleDateString('es-HN')}
                       </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                       <EventNote sx={{ fontSize: 16, color: 'text.secondary' }} />
                       <Typography variant="body2">
-                        <strong>Check-out:</strong> {new Date(selectedReservation.endDate).toLocaleDateString('es-AR')}
+                        <strong>Check-out:</strong> {new Date(selectedReservation.endDate).toLocaleDateString('es-HN')}
                       </Typography>
                     </Box>
                   </Grid>
@@ -550,7 +550,7 @@ const CalendarPage = () => {
                             {reservation.title}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {reservation.cabana} • {new Date(reservation.startDate).toLocaleDateString('es-AR')}
+                            {reservation.cabana} • {new Date(reservation.startDate).toLocaleDateString('es-HN')}
                           </Typography>
                         </Box>
                       </Box>

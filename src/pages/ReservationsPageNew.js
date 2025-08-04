@@ -124,15 +124,15 @@ const ReservationsPage = () => {
   const cabanaOptions = ['Cabaña Bosque', 'Cabaña Lago', 'Cabaña Vista', 'Cabaña Pino'];
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-AR', {
+    return new Intl.NumberFormat('es-HN', {
       style: 'currency',
-      currency: 'ARS',
+      currency: 'HNL',
       minimumFractionDigits: 0,
     }).format(amount);
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('es-AR');
+    return new Date(dateString).toLocaleDateString('es-HN');
   };
 
   const handleActionMenuOpen = (event, reservation) => {

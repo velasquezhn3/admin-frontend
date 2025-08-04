@@ -21,6 +21,7 @@ import {
   Settings as SettingsIcon,
   CalendarMonth as CalendarIcon,
   TrendingUp as TrendingUpIcon,
+  Category as CategoryIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -64,6 +65,13 @@ const menuItems = [
     color: '#06b6d4'
   },
   {
+    text: 'Tipos de Menú',
+    icon: <CategoryIcon />,
+    path: '/cabin-types',
+    color: '#10b981',
+    badge: 'WhatsApp'
+  },
+  {
     text: 'Reportes',
     icon: <TrendingUpIcon />,
     path: '/reports',
@@ -77,14 +85,17 @@ const menuItems = [
   },
 ];
 
-const Sidebar = ({ onClose }) => {
+const Sidebar = ({ onClose, autoClose = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
 
   const handleNavigation = (path) => {
     navigate(path);
-    if (onClose) onClose();
+    // Solo cerrar si autoClose está habilitado (móvil)
+    if (onClose && autoClose) {
+      onClose();
+    }
   };
 
   return (

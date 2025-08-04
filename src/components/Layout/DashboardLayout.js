@@ -31,7 +31,7 @@ const drawerWidth = 280;
 
 const DashboardLayout = ({ children, title = 'Dashboard' }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Cambiar de 'md' a 'sm'
   const navigate = useNavigate();
   
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -151,7 +151,7 @@ const DashboardLayout = ({ children, title = 'Dashboard' }) => {
       {/* Sidebar */}
       <Box
         component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
       >
         {/* Mobile drawer */}
         <Drawer
@@ -160,7 +160,7 @@ const DashboardLayout = ({ children, title = 'Dashboard' }) => {
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
           sx={{
-            display: { xs: 'block', md: 'none' },
+            display: { xs: 'block', sm: 'none' },
             '& .MuiDrawer-paper': { 
               boxSizing: 'border-box', 
               width: drawerWidth,
@@ -170,14 +170,14 @@ const DashboardLayout = ({ children, title = 'Dashboard' }) => {
             },
           }}
         >
-          <Sidebar onClose={handleDrawerToggle} />
+          <Sidebar onClose={handleDrawerToggle} autoClose={true} />
         </Drawer>
         
         {/* Desktop drawer */}
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', md: 'block' },
+            display: { xs: 'none', sm: 'block' },
             '& .MuiDrawer-paper': { 
               boxSizing: 'border-box', 
               width: drawerWidth,
@@ -198,7 +198,7 @@ const DashboardLayout = ({ children, title = 'Dashboard' }) => {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
           mt: 8,
           minHeight: 'calc(100vh - 64px)',
         }}

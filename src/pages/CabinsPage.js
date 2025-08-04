@@ -179,7 +179,7 @@ const CabinsPage = () => {
                   Capacidad: {cabin.capacity} personas
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Precio: ${cabin.price}
+                  Precio: L {cabin.price}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   {cabin.description}

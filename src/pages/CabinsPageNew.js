@@ -71,7 +71,7 @@ const cabinsData = [
     capacidad: 4,
     habitaciones: 2,
     baños: 1,
-    precio: 25000,
+    precio: 1500,
     estado: 'disponible',
     calificacion: 4.8,
     servicios: ['WiFi', 'Cocina', 'Parrilla', 'Calefacción', 'Aire Acondicionado'],
@@ -82,7 +82,7 @@ const cabinsData = [
     ],
     reservasProximas: 5,
     ocupacionMes: 85,
-    ingresosMes: 425000,
+    ingresosMes: 25500,
   },
   {
     id: 2,
@@ -91,7 +91,7 @@ const cabinsData = [
     capacidad: 6,
     habitaciones: 3,
     baños: 2,
-    precio: 35000,
+    precio: 4500,
     estado: 'ocupada',
     calificacion: 4.9,
     servicios: ['WiFi', 'Cocina', 'Parrilla', 'Deck', 'Vista al Lago'],
@@ -101,7 +101,7 @@ const cabinsData = [
     ],
     reservasProximas: 8,
     ocupacionMes: 92,
-    ingresosMes: 644000,
+    ingresosMes: 58500,
   },
   {
     id: 3,
@@ -110,7 +110,7 @@ const cabinsData = [
     capacidad: 8,
     habitaciones: 4,
     baños: 3,
-    precio: 45000,
+    precio: 6000,
     estado: 'mantenimiento',
     calificacion: 4.7,
     servicios: ['WiFi', 'Cocina', 'Parrilla', 'Jacuzzi', 'Vista Panorámica'],
@@ -119,7 +119,7 @@ const cabinsData = [
     ],
     reservasProximas: 3,
     ocupacionMes: 65,
-    ingresosMes: 292500,
+    ingresosMes: 39000,
   },
 ];
 
@@ -159,9 +159,9 @@ const CabinsPage = () => {
   });
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-AR', {
+    return new Intl.NumberFormat('es-HN', {
       style: 'currency',
-      currency: 'ARS',
+      currency: 'HNL',
       minimumFractionDigits: 0,
     }).format(amount);
   };
@@ -263,6 +263,20 @@ const CabinsPage = () => {
 
     if (filters.capacidad) {
       filtered = filtered.filter(cabin => cabin.capacidad >= parseInt(filters.capacidad));
+    }
+
+    if (filters.precio) {
+      filtered = filtered.filter(cabin => {
+        const precio = cabin.precio;
+        if (filters.precio === 'low') {
+          return precio <= 2000;
+        } else if (filters.precio === 'medium') {
+          return precio > 2000 && precio <= 4500;
+        } else if (filters.precio === 'high') {
+          return precio > 4500;
+        }
+        return true;
+      });
     }
 
     setCabins(filtered);
@@ -430,9 +444,9 @@ const CabinsPage = () => {
             onChange={(e) => setFilters(prev => ({ ...prev, precio: e.target.value }))}
           >
             <MenuItem value="">Todos</MenuItem>
-            <MenuItem value="low">Hasta $30.000</MenuItem>
-            <MenuItem value="medium">$30.000 - $50.000</MenuItem>
-            <MenuItem value="high">Más de $50.000</MenuItem>
+            <MenuItem value="low">Hasta L 2,000</MenuItem>
+            <MenuItem value="medium">L 2,000 - L 4,500</MenuItem>
+            <MenuItem value="high">Más de L 4,500</MenuItem>
           </Select>
         </FormControl>
 
@@ -703,7 +717,7 @@ const CabinsPage = () => {
               fullWidth
               required
               InputProps={{
-                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                startAdornment: <InputAdornment position="start">L</InputAdornment>,
               }}
             />
           </Grid>

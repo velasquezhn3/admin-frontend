@@ -14,6 +14,7 @@ import ReportsPageSimple from './pages/ReportsPageSimple';
 import SettingsPageSimple from './pages/SettingsPageSimple';
 import ActivitiesPage from './pages/ActivitiesPage';
 import ConversationStatesPage from './pages/ConversationStatesPage';
+import CabinTypesPage from './pages/CabinTypesPage';
 import PrivateRoute from './components/PrivateRoute';
 
 // Tema personalizado
@@ -132,6 +133,7 @@ function App() {
         <Route path="/reports" element={<PrivateRoute><ReportsPageSimple /></PrivateRoute>} />
         <Route path="/settings" element={<PrivateRoute><SettingsPageSimple /></PrivateRoute>} />
         <Route path="/activities" element={<PrivateRoute><ActivitiesPage /></PrivateRoute>} />
+        <Route path="/cabin-types" element={<PrivateRoute><CabinTypesPage /></PrivateRoute>} />
         <Route path="/conversation-states" element={<PrivateRoute><ConversationStatesPage /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

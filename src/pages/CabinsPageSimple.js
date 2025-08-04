@@ -174,9 +174,9 @@ const CabinsPageSimple = () => {
 
   const formatCurrency = (amount) => {
     if (!amount) return '-';
-    return new Intl.NumberFormat('es-AR', {
+    return new Intl.NumberFormat('es-HN', {
       style: 'currency',
-      currency: 'ARS',
+      currency: 'HNL',
       minimumFractionDigits: 0,
     }).format(amount);
   };

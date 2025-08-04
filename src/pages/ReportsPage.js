@@ -59,20 +59,20 @@ import MetricCard from '../components/Common/MetricCard';
 
 // Datos de ejemplo para reportes
 const monthlyData = [
-  { mes: 'Ene', reservas: 45, ingresos: 1250000, ocupacion: 78, gastos: 450000 },
-  { mes: 'Feb', reservas: 52, ingresos: 1420000, ocupacion: 82, gastos: 480000 },
-  { mes: 'Mar', reservas: 48, ingresos: 1380000, ocupacion: 79, gastos: 520000 },
-  { mes: 'Abr', reservas: 61, ingresos: 1680000, ocupacion: 89, gastos: 550000 },
-  { mes: 'May', reservas: 55, ingresos: 1550000, ocupacion: 85, gastos: 510000 },
-  { mes: 'Jun', reservas: 67, ingresos: 1850000, ocupacion: 92, gastos: 580000 },
-  { mes: 'Jul', reservas: 73, ingresos: 2050000, ocupacion: 95, gastos: 620000 },
+  { mes: 'Ene', reservas: 45, ingresos: 73500, ocupacion: 78, gastos: 26500 },
+  { mes: 'Feb', reservas: 52, ingresos: 83500, ocupacion: 82, gastos: 28200 },
+  { mes: 'Mar', reservas: 48, ingresos: 81200, ocupacion: 79, gastos: 30600 },
+  { mes: 'Abr', reservas: 61, ingresos: 98800, ocupacion: 89, gastos: 32400 },
+  { mes: 'May', reservas: 55, ingresos: 91200, ocupacion: 85, gastos: 30000 },
+  { mes: 'Jun', reservas: 67, ingresos: 108800, ocupacion: 92, gastos: 34100 },
+  { mes: 'Jul', reservas: 73, ingresos: 120600, ocupacion: 95, gastos: 36500 },
 ];
 
 const cabinPerformance = [
-  { cabana: 'Cabaña Bosque', reservas: 28, ingresos: 700000, ocupacion: 87 },
-  { cabana: 'Cabaña Lago', reservas: 32, ingresos: 1120000, ocupacion: 94 },
-  { cabana: 'Cabaña Vista', reservas: 25, ingresos: 1125000, ocupacion: 83 },
-  { cabana: 'Cabaña Pino', reservas: 20, ingresos: 500000, ocupacion: 71 },
+  { cabana: 'Cabaña Bosque', reservas: 28, ingresos: 41200, ocupacion: 87 },
+  { cabana: 'Cabaña Lago', reservas: 32, ingresos: 65900, ocupacion: 94 },
+  { cabana: 'Cabaña Vista', reservas: 25, ingresos: 66200, ocupacion: 83 },
+  { cabana: 'Cabaña Pino', reservas: 20, ingresos: 29400, ocupacion: 71 },
 ];
 
 const customerSegments = [
@@ -112,9 +112,9 @@ const ReportsPage = () => {
   const gananciaTotal = totalIngresos - totalGastos;
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-AR', {
+    return new Intl.NumberFormat('es-HN', {
       style: 'currency',
-      currency: 'ARS',
+      currency: 'HNL',
       minimumFractionDigits: 0,
     }).format(amount);
   };

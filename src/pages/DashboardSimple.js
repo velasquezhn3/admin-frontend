@@ -19,6 +19,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 import MetricCard from '../components/Common/MetricCard';
+import UpcomingReservations from '../components/Dashboard/UpcomingReservations';
 import apiService from '../services/apiService';
 
 const DashboardSimple = () => {
@@ -83,9 +84,9 @@ const DashboardSimple = () => {
   }, []);
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-AR', {
+    return new Intl.NumberFormat('es-HN', {
       style: 'currency',
-      currency: 'ARS',
+      currency: 'HNL',
       minimumFractionDigits: 0,
     }).format(amount);
   };
@@ -156,46 +157,59 @@ const DashboardSimple = () => {
           </Grid>
         </Grid>
 
-        {/* Contenido básico */}
-        <Card sx={{ borderRadius: 2 }}>
-          <CardContent sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-              Sistema de Gestión Villas Julie
-            </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              Dashboard administrativo funcionando correctamente. Las funcionalidades avanzadas se cargarán progresivamente.
-            </Typography>
-            <Grid container spacing={2}>
-              <Grid item>
-                <Button 
-                  variant="contained" 
-                  sx={{ borderRadius: 2 }}
-                  onClick={() => navigate('/reservations')}
-                >
-                  Ver Reservas
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button 
-                  variant="outlined" 
-                  sx={{ borderRadius: 2 }}
-                  onClick={() => navigate('/cabins')}
-                >
-                  Gestionar Cabañas
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button 
-                  variant="outlined" 
-                  sx={{ borderRadius: 2 }}
-                  onClick={() => navigate('/reports')}
-                >
-                  Ver Reportes
-                </Button>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+        {/* Reservas Inminentes */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} lg={6}>
+            <UpcomingReservations />
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            {/* Contenido básico */}
+            <Card sx={{ borderRadius: 2 }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                  Sistema de Gestión Villas Julie
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                  Dashboard administrativo funcionando correctamente. Las funcionalidades avanzadas se cargarán progresivamente.
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item>
+                    <Button 
+                      variant="contained" 
+                      sx={{ borderRadius: 2 }}
+                      onClick={() => navigate('/reservations')}
+                    >
+                      Ver Reservas
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button 
+                      variant="outlined" 
+                      sx={{ borderRadius: 2 }}
+                      onClick={() => navigate('/cabins')}
+                    >
+                      Gestionar Cabañas
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button 
+                      variant="outlined" 
+                      sx={{ borderRadius: 2 }}
+                      onClick={() => navigate('/reports')}
+                    >
+                      Ver Reportes
+                    </Button>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            {/* Reservas Inminentes */}
+            <Box sx={{ mt: 3 }}>
+              <UpcomingReservations />
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
     </DashboardLayout>
   );
