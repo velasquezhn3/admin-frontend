@@ -3,9 +3,12 @@ const API_BASE_URL = 'http://localhost:4000';
 class ApiService {
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    const token = localStorage.getItem('adminToken');
+    
     const config = {
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
@@ -67,120 +70,123 @@ class ApiService {
     }
 
     if (baseEndpoint === '/admin/reservations') {
-      return [
-        { 
-          reservation_id: 1, 
-          user_id: 1,
-          user_name: 'Ana Martínez', 
-          phone_number: '+54911234570',
-          cabin_id: 1,
-          cabin_name: 'Cabaña Tortuga 1',
-          start_date: '2025-08-15', 
-          end_date: '2025-08-20', 
-          status: 'confirmada', 
-          total_price: 7500,
-          personas: 3,
-          comprobante_nombre_archivo: null
-        },
-        { 
-          reservation_id: 2, 
-          user_id: 2,
-          user_name: 'Roberto Silva', 
-          phone_number: '+54911234571',
-          cabin_id: 2,
-          cabin_name: 'Cabaña Delfín 1',
-          start_date: '2025-08-22', 
-          end_date: '2025-08-25', 
-          status: 'pendiente', 
-          total_price: 5400,
-          personas: 2,
-          comprobante_nombre_archivo: null
-        },
-        { 
-          reservation_id: 7, 
-          user_id: 7,
-          user_name: 'Patricia López', 
-          phone_number: '+54911234576',
-          cabin_id: 3,
-          cabin_name: 'Cabaña Tortuga 3',
-          start_date: '2025-07-28', 
-          end_date: '2025-08-02', 
-          status: 'confirmada', 
-          total_price: 6000,
-          personas: 4,
-          comprobante_nombre_archivo: null
-        },
-        { 
-          reservation_id: 8, 
-          user_id: 8,
-          user_name: 'Miguel Torres', 
-          phone_number: '+54911234577',
-          cabin_id: 6,
-          cabin_name: 'Cabaña Tiburón 1',
-          start_date: '2025-08-05', 
-          end_date: '2025-08-12', 
-          status: 'confirmada', 
-          total_price: 12600,
-          personas: 6,
-          comprobante_nombre_archivo: 'comprobante-001.jpg'
-        },
-        { 
-          reservation_id: 9, 
-          user_id: 9,
-          user_name: 'Sandra Ramírez', 
-          phone_number: '+54911234578',
-          cabin_id: 4,
-          cabin_name: 'Cabaña Delfín 1',
-          start_date: '2025-09-10', 
-          end_date: '2025-09-15', 
-          status: 'pendiente', 
-          total_price: 9000,
-          personas: 5,
-          comprobante_nombre_archivo: null
-        },
-        { 
-          reservation_id: 10, 
-          user_id: 10,
-          user_name: 'Fernando Vega', 
-          phone_number: '+54911234579',
-          cabin_id: 7,
-          cabin_name: 'Cabaña Tiburón 2',
-          start_date: '2025-08-30', 
-          end_date: '2025-09-06', 
-          status: 'confirmada', 
-          total_price: 12000,
-          personas: 8,
-          comprobante_nombre_archivo: 'comprobante-002.pdf'
-        },
-        { 
-          reservation_id: 11, 
-          user_id: 11,
-          user_name: 'Claudia Herrera', 
-          phone_number: '+54911234580',
-          cabin_id: 2,
-          cabin_name: 'Cabaña Tortuga 2',
-          start_date: '2025-07-15', 
-          end_date: '2025-07-22', 
-          status: 'cancelada', 
-          total_price: 4500,
-          personas: 2,
-          comprobante_nombre_archivo: null
-        },
-        { 
-          reservation_id: 12, 
-          user_id: 12,
-          user_name: 'Alejandro Méndez', 
-          phone_number: '+54911234581',
-          cabin_id: 5,
-          cabin_name: 'Cabaña Delfín 2',
-          start_date: '2025-10-01', 
-          end_date: '2025-10-07', 
-          status: 'pendiente', 
-          total_price: 10800,
-          personas: 6,
-          comprobante_nombre_archivo: null
-        }
-      ];
+      return {
+        success: true,
+        data: [
+          { 
+            reservation_id: 1, 
+            user_id: 1,
+            user_name: 'Ana Martínez', 
+            phone_number: '+54911234570',
+            cabin_id: 1,
+            cabin_name: 'Cabaña Tortuga 1',
+            start_date: '2025-08-15', 
+            end_date: '2025-08-20', 
+            status: 'confirmada', 
+            total_price: 7500,
+            personas: 3,
+            comprobante_nombre_archivo: null
+          },
+          { 
+            reservation_id: 2, 
+            user_id: 2,
+            user_name: 'Roberto Silva', 
+            phone_number: '+54911234571',
+            cabin_id: 2,
+            cabin_name: 'Cabaña Delfín 1',
+            start_date: '2025-08-22', 
+            end_date: '2025-08-25', 
+            status: 'pendiente', 
+            total_price: 5400,
+            personas: 2,
+            comprobante_nombre_archivo: null
+          },
+          { 
+            reservation_id: 7, 
+            user_id: 7,
+            user_name: 'Patricia López', 
+            phone_number: '+54911234576',
+            cabin_id: 3,
+            cabin_name: 'Cabaña Tortuga 3',
+            start_date: '2025-07-28', 
+            end_date: '2025-08-02', 
+            status: 'confirmada', 
+            total_price: 6000,
+            personas: 4,
+            comprobante_nombre_archivo: null
+          },
+          { 
+            reservation_id: 8, 
+            user_id: 8,
+            user_name: 'Miguel Torres', 
+            phone_number: '+54911234577',
+            cabin_id: 6,
+            cabin_name: 'Cabaña Tiburón 1',
+            start_date: '2025-08-05', 
+            end_date: '2025-08-12', 
+            status: 'confirmada', 
+            total_price: 12600,
+            personas: 6,
+            comprobante_nombre_archivo: 'comprobante-001.jpg'
+          },
+          { 
+            reservation_id: 9, 
+            user_id: 9,
+            user_name: 'Sandra Ramírez', 
+            phone_number: '+54911234578',
+            cabin_id: 4,
+            cabin_name: 'Cabaña Delfín 1',
+            start_date: '2025-09-10', 
+            end_date: '2025-09-15', 
+            status: 'pendiente', 
+            total_price: 9000,
+            personas: 5,
+            comprobante_nombre_archivo: null
+          },
+          { 
+            reservation_id: 10, 
+            user_id: 10,
+            user_name: 'Fernando Vega', 
+            phone_number: '+54911234579',
+            cabin_id: 7,
+            cabin_name: 'Cabaña Tiburón 2',
+            start_date: '2025-08-30', 
+            end_date: '2025-09-06', 
+            status: 'confirmada', 
+            total_price: 12000,
+            personas: 8,
+            comprobante_nombre_archivo: 'comprobante-002.pdf'
+          },
+          { 
+            reservation_id: 11, 
+            user_id: 11,
+            user_name: 'Claudia Herrera', 
+            phone_number: '+54911234580',
+            cabin_id: 2,
+            cabin_name: 'Cabaña Tortuga 2',
+            start_date: '2025-07-15', 
+            end_date: '2025-07-22', 
+            status: 'cancelada', 
+            total_price: 4500,
+            personas: 2,
+            comprobante_nombre_archivo: null
+          },
+          { 
+            reservation_id: 12, 
+            user_id: 12,
+            user_name: 'Alejandro Méndez', 
+            phone_number: '+54911234581',
+            cabin_id: 5,
+            cabin_name: 'Cabaña Delfín 2',
+            start_date: '2025-10-01', 
+            end_date: '2025-10-07', 
+            status: 'pendiente', 
+            total_price: 10800,
+            personas: 6,
+            comprobante_nombre_archivo: null
+          }
+        ]
+      };
     }
 
     if (baseEndpoint === '/admin/reservations/upcoming') {
@@ -256,44 +262,47 @@ class ApiService {
 
     if (baseEndpoint === '/admin/calendar-occupancy') {
       return {
-        cabanas: [
-          { id: 1, nombre: 'Cabaña Tortuga 1', capacidad: 3 },
-          { id: 2, nombre: 'Cabaña Tortuga 2', capacidad: 3 },
-          { id: 3, nombre: 'Cabaña Tortuga 3', capacidad: 3 },
-          { id: 4, nombre: 'Cabaña Delfín 1', capacidad: 6 },
-          { id: 5, nombre: 'Cabaña Delfín 2', capacidad: 6 },
-          { id: 6, nombre: 'Cabaña Tiburón 1', capacidad: 8 },
-          { id: 7, nombre: 'Cabaña Tiburón 2', capacidad: 8 },
-          { id: 8, nombre: 'Cabaña Tiburón 3', capacidad: 8 },
-          { id: 9, nombre: 'Cabaña Tiburón 4', capacidad: 8 },
-          { id: 10, nombre: 'Cabaña Tiburón 5', capacidad: 8 },
-          { id: 11, nombre: 'Cabaña Tiburón 6', capacidad: 8 },
-          { id: 12, nombre: 'Cabaña Tiburón 7', capacidad: 8 },
-          { id: 13, nombre: 'Cabaña Tiburón 8', capacidad: 8 }
-        ],
-        ocupacion: {
-          1: {
-            '2025-08-05': 'confirmada',
-            '2025-08-06': 'confirmada',
-            '2025-08-07': 'confirmada'
+        success: true,
+        data: {
+          cabanas: [
+            { id: 1, nombre: 'Cabaña Tortuga 1', capacidad: 3 },
+            { id: 2, nombre: 'Cabaña Tortuga 2', capacidad: 3 },
+            { id: 3, nombre: 'Cabaña Tortuga 3', capacidad: 3 },
+            { id: 4, nombre: 'Cabaña Delfín 1', capacidad: 6 },
+            { id: 5, nombre: 'Cabaña Delfín 2', capacidad: 6 },
+            { id: 6, nombre: 'Cabaña Tiburón 1', capacidad: 8 },
+            { id: 7, nombre: 'Cabaña Tiburón 2', capacidad: 8 },
+            { id: 8, nombre: 'Cabaña Tiburón 3', capacidad: 8 },
+            { id: 9, nombre: 'Cabaña Tiburón 4', capacidad: 8 },
+            { id: 10, nombre: 'Cabaña Tiburón 5', capacidad: 8 },
+            { id: 11, nombre: 'Cabaña Tiburón 6', capacidad: 8 },
+            { id: 12, nombre: 'Cabaña Tiburón 7', capacidad: 8 },
+            { id: 13, nombre: 'Cabaña Tiburón 8', capacidad: 8 }
+          ],
+          ocupacion: {
+            1: {
+              '2025-08-05': 'confirmada',
+              '2025-08-06': 'confirmada',
+              '2025-08-07': 'confirmada'
+            },
+            4: {
+              '2025-08-10': 'pendiente',
+              '2025-08-11': 'pendiente',
+              '2025-08-12': 'pendiente'
+            },
+            6: {
+              '2025-08-15': 'confirmada',
+              '2025-08-16': 'confirmada'
+            },
+            2: {
+              '2025-08-20': 'confirmada',
+              '2025-08-21': 'confirmada',
+              '2025-08-22': 'confirmada'
+            }
           },
-          4: {
-            '2025-08-10': 'pendiente',
-            '2025-08-11': 'pendiente',
-            '2025-08-12': 'pendiente'
-          },
-          6: {
-            '2025-08-15': 'confirmada',
-            '2025-08-16': 'confirmada'
-          },
-          2: {
-            '2025-08-20': 'confirmada',
-            '2025-08-21': 'confirmada',
-            '2025-08-22': 'confirmada'
-          }
-        },
-        year: 2025,
-        month: 8
+          year: 2025,
+          month: 8
+        }
       };
     }
     

@@ -60,7 +60,7 @@ const ReservationsPageSimple = () => {
     try {
       setLoading(true);
       const data = await apiService.getReservations();
-      setReservations(data || []);
+      setReservations(data.data || []);
       setError(null);
     } catch (err) {
       console.error('Error fetching reservations:', err);

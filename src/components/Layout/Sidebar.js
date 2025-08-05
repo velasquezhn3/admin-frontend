@@ -22,6 +22,7 @@ import {
   CalendarMonth as CalendarIcon,
   TrendingUp as TrendingUpIcon,
   Category as CategoryIcon,
+  SupervisorAccount as AdminIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -70,6 +71,13 @@ const menuItems = [
     path: '/cabin-types',
     color: '#10b981',
     badge: 'WhatsApp'
+  },
+  {
+    text: 'Administradores',
+    icon: <AdminIcon />,
+    path: '/admin-users',
+    color: '#8b5cf6',
+    badge: 'Admin'
   },
   {
     text: 'Reportes',

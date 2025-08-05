@@ -116,8 +116,12 @@ const CalendarPageImproved = () => {
     setError(null);
     try {
       console.log('[DEBUG] Fetching calendar data for year:', year, 'month:', month);
-      const data = await apiService.getCalendarOccupancy(year, month);
-      console.log('[DEBUG] Calendar data received:', data);
+      const response = await apiService.getCalendarOccupancy(year, month);
+      console.log('[DEBUG] Calendar response received:', response);
+      
+      // Access data from the response structure
+      const data = response.data || response;
+      console.log('[DEBUG] Extracted data:', data);
       
       setCabanas(data.cabanas || []);
       

@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import LoginPage from './pages/LoginPage';
-import DashboardSimple from './pages/DashboardSimple';
+import DashboardSimple from './pages/DashboardSimple_FIXED';
 import ReservationsPageSimple from './pages/ReservationsPageSimple';
 import UsersPageSimple from './pages/UsersPageSimple';
 import CabinsPageSimple from './pages/CabinsPageSimple';
@@ -15,7 +15,10 @@ import SettingsPageSimple from './pages/SettingsPageSimple';
 import ActivitiesPage from './pages/ActivitiesPage';
 import ConversationStatesPage from './pages/ConversationStatesPage';
 import CabinTypesPage from './pages/CabinTypesPage';
+import AdminUsersPage from './pages/AdminUsersPage';
 import PrivateRoute from './components/PrivateRoute';
+import ConnectionTest from './components/ConnectionTest';
+import TestDashboard from './pages/TestDashboard';
 
 // Tema personalizado
 const theme = createTheme({
@@ -134,7 +137,10 @@ function App() {
         <Route path="/settings" element={<PrivateRoute><SettingsPageSimple /></PrivateRoute>} />
         <Route path="/activities" element={<PrivateRoute><ActivitiesPage /></PrivateRoute>} />
         <Route path="/cabin-types" element={<PrivateRoute><CabinTypesPage /></PrivateRoute>} />
+        <Route path="/admin-users" element={<PrivateRoute><AdminUsersPage /></PrivateRoute>} />
         <Route path="/conversation-states" element={<PrivateRoute><ConversationStatesPage /></PrivateRoute>} />
+        <Route path="/test-connection" element={<ConnectionTest />} />
+        <Route path="/test-dashboard" element={<TestDashboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </ThemeProvider>

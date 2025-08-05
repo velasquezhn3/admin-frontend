@@ -8,14 +8,31 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Simple hardcoded authentication
-    if (username === 'admin' && password === 'admin123') {
-      localStorage.setItem('adminToken', 'token123');
-      navigate('/');
-    } else {
-      setError('Usuario o contraseña incorrectos');
+    setError('');
+    
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        localStorage.setItem('adminToken', data.data.token);
+        localStorage.setItem('adminUser', JSON.stringify(data.data.user));
+        navigate('/');
+      } else {
+        setError(data.message || 'Usuario o contraseña incorrectos');
+      }
+    } catch (error) {
+      console.error('Error de login:', error);
+      setError('Error de conexión con el servidor');
     }
   };
 

@@ -4,7 +4,7 @@ import {
   Typography,
 } from '@mui/material';
 import DashboardLayout from '../components/Layout/DashboardLayout';
-import DashboardAnalyticsRecharts from '../components/DashboardAnalyticsRecharts';
+import TestComponent from '../components/TestComponent';
 
 const DashboardSimple = () => {
   return (
@@ -14,16 +14,16 @@ const DashboardSimple = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-              Dashboard Analytics Avanzado �
+              Diagnóstico del Sistema 🔧
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Sistema completo de análisis y métricas de negocio
+              Probando la conectividad y funcionalidad del backend
             </Typography>
           </Box>
         </Box>
 
-        {/* Dashboard Analytics Avanzado */}
-        <DashboardAnalyticsRecharts />
+        {/* Test Component */}
+        <TestComponent />
       </Box>
     </DashboardLayout>
   );

@@ -9,7 +9,13 @@ class CabinTypesService {
   async getAllCabinTypes() {
     try {
       console.log('Fetching from:', `${API_BASE_URL}/admin/cabin-types`);
-      const response = await fetch(`${API_BASE_URL}/admin/cabin-types`);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/admin/cabin-types`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
@@ -28,7 +34,13 @@ class CabinTypesService {
    */
   async getCabinTypeByKey(typeKey) {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/cabin-types/${typeKey}`);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/admin/cabin-types/${typeKey}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
@@ -44,9 +56,11 @@ class CabinTypesService {
    */
   async updateCabinType(typeKey, data) {
     try {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`${API_BASE_URL}/admin/cabin-types/${typeKey}`, {
         method: 'PUT',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
@@ -68,9 +82,11 @@ class CabinTypesService {
    */
   async createCabinType(data) {
     try {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`${API_BASE_URL}/admin/cabin-types`, {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
@@ -92,9 +108,11 @@ class CabinTypesService {
    */
   async toggleCabinType(typeKey, activo) {
     try {
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`${API_BASE_URL}/admin/cabin-types/${typeKey}/toggle`, {
         method: 'PATCH',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ activo }),
@@ -116,7 +134,13 @@ class CabinTypesService {
    */
   async getMenuPreview() {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/cabin-types/preview/menu`);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/admin/cabin-types/preview/menu`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }

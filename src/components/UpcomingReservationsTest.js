@@ -22,48 +22,39 @@ import {
   Home as HomeIcon,
   Schedule as ScheduleIcon,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import apiService from '../../services/apiService';
 
-const UpcomingReservations = () => {
+const UpcomingReservationsTest = () => {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUpcomingReservations = async () => {
       try {
         setLoading(true);
-        const response = await apiService.getUpcomingReservations();
+        // Llamada directa sin autenticación al servidor simple
+        const response = await fetch('http://localhost:4000/admin/reservations/upcoming');
         
-        // Debug: ver qué estamos recibiendo
-        console.log('UpcomingReservations response:', response);
-        
-        // El apiService ya maneja el formato de respuesta correctamente
-        // Si es mock data, será directamente un array
-        // Si es del backend real, será { success: true, data: [...] }
-        let reservationsArray = [];
-        
-        if (Array.isArray(response)) {
-          // Datos mock directamente como array
-          reservationsArray = response;
-        } else if (response && response.success && Array.isArray(response.data)) {
-          // Respuesta del backend real
-          reservationsArray = response.data;
-        } else if (response && Array.isArray(response.data)) {
-          // Respuesta sin campo success pero con data array
-          reservationsArray = response.data;
-        } else {
-          console.warn('Unexpected response format for upcoming reservations:', response);
-          reservationsArray = [];
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
         
-        setReservations(reservationsArray);
+        const data = await response.json();
+        
+        console.log('UpcomingReservationsTest response:', data);
+        
+        // El servidor simple devuelve { success: true, data: [...] }
+        if (data.success && Array.isArray(data.data)) {
+          setReservations(data.data);
+        } else {
+          console.warn('Unexpected response format:', data);
+          setReservations([]);
+        }
+        
         setError(null);
       } catch (err) {
         console.error('Error fetching upcoming reservations:', err);
-        setError('Error al cargar las reservas inminentes');
+        setError(`Error al cargar las reservas: ${err.message}`);
         setReservations([]);
       } finally {
         setLoading(false);
@@ -129,7 +120,7 @@ const UpcomingReservations = () => {
       <Card sx={{ borderRadius: 2 }}>
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-            Reservas Inminentes
+            Reservas Inminentes (Test)
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
             <CircularProgress />
@@ -144,7 +135,7 @@ const UpcomingReservations = () => {
       <Card sx={{ borderRadius: 2 }}>
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-            Reservas Inminentes
+            Reservas Inminentes (Test)
           </Typography>
           <Alert severity="error">{error}</Alert>
         </CardContent>
@@ -157,15 +148,13 @@ const UpcomingReservations = () => {
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Reservas Inminentes (24-72h)
+            Reservas Inminentes (Test) 🧪
           </Typography>
-          <Button
-            size="small"
-            onClick={() => navigate('/reservations')}
-            sx={{ textTransform: 'none' }}
-          >
-            Ver todas
-          </Button>
+          <Chip 
+            label={`${reservations.length} reservas`} 
+            color="primary" 
+            size="small" 
+          />
         </Box>
         
         {!Array.isArray(reservations) || reservations.length === 0 ? (
@@ -181,7 +170,7 @@ const UpcomingReservations = () => {
         ) : (
           <List sx={{ p: 0 }}>
             {reservations.map((reservation, index) => (
-              <React.Fragment key={reservation.reservation_id}>
+              <React.Fragment key={reservation.reservation_id || index}>
                 <ListItem sx={{ px: 0, py: 2, alignItems: 'flex-start' }}>
                   <ListItemIcon sx={{ mt: 0.5 }}>
                     {getEventIcon(reservation.event_type)}
@@ -237,4 +226,4 @@ const UpcomingReservations = () => {
   );
 };
 
-export default UpcomingReservations;
+export default UpcomingReservationsTest;

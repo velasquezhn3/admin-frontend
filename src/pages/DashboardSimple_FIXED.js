@@ -14,7 +14,7 @@ const DashboardSimple = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Box>
             <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
-              Dashboard Analytics Avanzado �
+              Dashboard Analytics Avanzado 📊
             </Typography>
             <Typography variant="body1" color="text.secondary">
               Sistema completo de análisis y métricas de negocio
