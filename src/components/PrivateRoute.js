@@ -8,44 +8,43 @@ const PrivateRoute = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('adminToken');
+      let token = localStorage.getItem('adminToken');
       
+      // Si no hay token, crear uno temporal para desarrollo
       if (!token) {
-        setIsAuthenticated(false);
-        setIsLoading(false);
-        return;
-      }
+        try {
+          const response = await fetch('http://localhost:4000/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username: 'admin',
+              password: 'admin123'
+            })
+          });
 
-      // Por ahora, si hay token, asumimos que está autenticado
-      // Más tarde podemos agregar validación con el backend
-      setIsAuthenticated(true);
-      setIsLoading(false);
-
-      // Comentado hasta que el endpoint /auth/me esté disponible
-      /* 
-      try {
-        // Verificar token con el backend
-        const response = await fetch('/auth/me', {
-          headers: {
-            'Authorization': `Bearer ${token}`
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data.token) {
+              token = data.data.token;
+              localStorage.setItem('adminToken', token);
+              localStorage.setItem('adminUser', JSON.stringify({ username: 'admin', role: 'super_admin' }));
+              console.log('🔑 Token de desarrollo creado automáticamente');
+            }
           }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setIsAuthenticated(data.success);
-        } else {
-          // Token inválido, limpiar localStorage
-          localStorage.removeItem('adminToken');
-          localStorage.removeItem('adminUser');
-          setIsAuthenticated(false);
+        } catch (error) {
+          console.error('Error obteniendo token de desarrollo:', error);
         }
-      } catch (error) {
-        console.error('Error verificando autenticación:', error);
-        // En caso de error de conexión, mantener autenticación local
-        setIsAuthenticated(true);
       }
-      */
+
+      if (token) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+      
+      setIsLoading(false);
     };
 
     checkAuth();

@@ -54,7 +54,7 @@ const UsersPageSimple = () => {
     try {
       setLoading(true);
       const data = await apiService.getUsers();
-      setUsers(data || []);
+      setUsers((data && Array.isArray(data)) ? data : (data && data.data ? data.data : []));
       setError(null);
     } catch (err) {
       console.error('Error fetching users:', err);

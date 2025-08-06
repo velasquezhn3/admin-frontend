@@ -41,6 +41,13 @@ const menuItems = [
     badge: 'Nuevo'
   },
   {
+    text: 'Crear Reservación',
+    icon: <ReservationsIcon />,
+    path: '/reservation-create',
+    color: '#10b981',
+    badge: 'Formulario'
+  },
+  {
     text: 'Calendario',
     icon: <CalendarIcon />,
     path: '/calendar',

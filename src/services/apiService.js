@@ -3,33 +3,47 @@ const API_BASE_URL = 'http://localhost:4000';
 class ApiService {
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
-    const token = localStorage.getItem('adminToken');
-    
+    let token = localStorage.getItem('adminToken');
+    // Si no hay token, intentar obtenerlo de sessionStorage (fallback)
+    if (!token) token = sessionStorage.getItem('adminToken');
+    // Si la ruta es /admin/* y no hay token, mostrar advertencia
+    const isAdminRoute = endpoint.startsWith('/admin/');
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
+    if (isAdminRoute) {
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        console.warn('No se encontró token de autenticación para ruta admin:', endpoint);
+      }
+    }
     const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-        ...options.headers,
-      },
+      headers,
       ...options,
     };
 
     try {
       const response = await fetch(url, config);
       if (!response.ok) {
+        // Si es 401 o 403, mostrar mensaje claro de sesión expirada
+        if (response.status === 401 || response.status === 403) {
+          const errorMsg = 'Sesión expirada o sin permisos. Por favor, vuelve a iniciar sesión.';
+          alert(errorMsg);
+          throw new Error(errorMsg);
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const result = await response.json();
       return result;
     } catch (error) {
       console.error('API request failed:', error);
-      
       // Return mock data if backend is not available
       if (error.message.includes('Failed to fetch') || error.message.includes('CONNECTION') || error.name === 'TypeError') {
         console.warn('Backend not available, returning mock data for endpoint:', endpoint);
         return this.getMockData(endpoint);
       }
-      
       throw error;
     }
   }
@@ -309,13 +323,13 @@ class ApiService {
     return [];
   }
 
-  // Users endpoints
+  // Users endpoints (huéspedes)
   async getUsers() {
-    return this.request('/admin/users');
+    return this.request('/users');
   }
 
   async createUser(user) {
-    return this.request('/admin/users', {
+    return this.request('/users', {
       method: 'POST',
       body: JSON.stringify(user),
     });
@@ -462,6 +476,105 @@ class ApiService {
     
     const endpoint = `/admin/calendar-occupancy${params.toString() ? '?' + params.toString() : ''}`;
     return this.request(endpoint);
+  }
+
+  // Get occupied dates for a specific cabin
+  async getCabinOccupiedDates(cabinId, year, month) {
+    try {
+      const endpoint = `/admin/cabins/${cabinId}/occupied-dates`;
+      const result = await this.request(endpoint);
+      return result.data || [];
+    } catch (error) {
+      console.error('Error getting occupied dates from API:', error);
+      
+      // Fallback to local calculation
+      try {
+        const reservationsData = await this.getReservations();
+        const reservations = reservationsData.data || [];
+        
+        // Filter reservations for this cabin that are confirmed or pending
+        const cabinReservations = reservations.filter(r => 
+          (r.cabin_id === cabinId) && 
+          (r.status === 'confirmada' || r.status === 'confirmado' || r.status === 'pendiente')
+        );
+        
+        const occupiedDates = [];
+        cabinReservations.forEach(reservation => {
+          const start = new Date(reservation.start_date);
+          const end = new Date(reservation.end_date);
+          
+          // Add all dates between start and end (inclusive)
+          for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+            occupiedDates.push(d.toISOString().split('T')[0]);
+          }
+        });
+        
+        return occupiedDates;
+      } catch (fallbackError) {
+        console.error('Error in fallback occupied dates calculation:', fallbackError);
+        return [];
+      }
+    }
+  }
+
+  // Calculate price for reservation
+  async calculateReservationPrice(cabinId, startDate, endDate) {
+    try {
+      const requestData = {
+        cabin_id: cabinId,
+        start_date: startDate,
+        end_date: endDate
+      };
+      
+      const result = await this.request('/admin/reservations/calculate-price', {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+      });
+      
+      return result.data || { total_price: 0 };
+    } catch (error) {
+      console.error('Error calculating price from API:', error);
+      
+      // Fallback to local calculation
+      try {
+        const cabinsData = await this.getCabins();
+        const cabin = cabinsData.find(c => c.cabin_id === cabinId || c.id === cabinId);
+        
+        if (!cabin || !startDate || !endDate) return { total_price: 0 };
+        
+        // Calculate nights
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+        
+        if (nights <= 0) return { total_price: 0 };
+        
+        // Basic pricing logic (fallback)
+        const cabinName = cabin.name || cabin.nombre || '';
+        let pricePerNight = cabin.price || cabin.precio_noche || 1500;
+        
+        // Apply weekend pricing if needed
+        const isWeekend = start.getDay() === 5 || start.getDay() === 6; // Friday or Saturday
+        if (isWeekend && cabinName.toLowerCase().includes('delfin')) {
+          pricePerNight = Math.max(pricePerNight, 5000);
+        } else if (isWeekend && cabinName.toLowerCase().includes('tiburon')) {
+          pricePerNight = Math.max(pricePerNight, 5000);
+        }
+        
+        const totalPrice = pricePerNight * nights;
+        
+        return {
+          total_price: totalPrice,
+          nights: nights,
+          price_per_night: Math.round(totalPrice / nights),
+          cabin_name: cabin.name || cabin.nombre,
+          cabin_type: 'fallback'
+        };
+      } catch (fallbackError) {
+        console.error('Error in fallback price calculation:', fallbackError);
+        return { total_price: 0 };
+      }
+    }
   }
 
   // Conversation States endpoints
