@@ -75,22 +75,52 @@ const CabinsPageSimple = () => {
   };
 
   const filterCabins = () => {
+    console.log('[DEBUG] Filtros - Tipo seleccionado:', filterType);
+    console.log('[DEBUG] Filtros - Cabañas disponibles:', cabins);
+    
     if (filterType === 'all') {
       setFilteredCabins(cabins);
     } else {
       const filtered = cabins.filter(cabin => {
         const cabinName = cabin.name || cabin.nombre || '';
-        return cabinName.toLowerCase().includes(filterType.toLowerCase());
+        const cabinType = getCabinType(cabinName);
+        const matches = cabinType === filterType;
+        
+        console.log(`[DEBUG] Cabaña: "${cabinName}" -> Tipo: "${cabinType}" -> Coincide con "${filterType}": ${matches}`);
+        
+        return matches;
       });
+      
+      console.log('[DEBUG] Cabañas filtradas:', filtered);
       setFilteredCabins(filtered);
     }
   };
 
   const getCabinType = (cabinName) => {
-    if (cabinName.toLowerCase().includes('tortuga')) return 'tortuga';
-    if (cabinName.toLowerCase().includes('delfín') || cabinName.toLowerCase().includes('delfin')) return 'delfin';
-    if (cabinName.toLowerCase().includes('tiburón') || cabinName.toLowerCase().includes('tiburon')) return 'tiburon';
-    if (cabinName.toLowerCase().includes('caracol')) return 'caracol';
+    if (!cabinName) return 'otro';
+    
+    const name = cabinName.toLowerCase();
+    
+    // Verificar cada tipo de cabaña
+    if (name.includes('tortuga')) return 'tortuga';
+    if (name.includes('delfín') || name.includes('delfin')) return 'delfin';
+    if (name.includes('tiburón') || name.includes('tiburon')) return 'tiburon';
+    if (name.includes('caracol')) return 'caracol';
+    
+    // Intentar con patrones más específicos
+    const patterns = [
+      { pattern: /tortuga/i, type: 'tortuga' },
+      { pattern: /delfín?/i, type: 'delfin' },
+      { pattern: /tiburón?/i, type: 'tiburon' },
+      { pattern: /caracol/i, type: 'caracol' }
+    ];
+    
+    for (const { pattern, type } of patterns) {
+      if (pattern.test(cabinName)) {
+        return type;
+      }
+    }
+    
     return 'otro';
   };
 

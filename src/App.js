@@ -4,7 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import LoginPage from './pages/LoginPage';
 import DashboardSimple from './pages/DashboardSimple_FIXED';
-import ReservationsPageSimple from './pages/ReservationsPageSimple';
+import ReservationsPageSimplePro from './pages/ReservationsPageSimplePro';
 import ReservasResumen from './pages/ReservasResumen';
 import ReservationsAdvanced from './pages/ReservationsAdvanced';
 import ReservationFormAdvanced from './pages/ReservationFormAdvanced';
@@ -133,10 +133,10 @@ function App() {
         <Route path="/dashboard" element={<PrivateRoute><DashboardSimple /></PrivateRoute>} />
         <Route path="/users" element={<PrivateRoute><UsersPageSimple /></PrivateRoute>} />
         <Route path="/cabins" element={<PrivateRoute><CabinsPageSimple /></PrivateRoute>} />
-        <Route path="/reservations" element={<PrivateRoute><ReservationsPageSimple /></PrivateRoute>} />
+        <Route path="/reservations" element={<PrivateRoute><ReservationsPageSimplePro /></PrivateRoute>} />
         <Route path="/reservation-create" element={<PrivateRoute><ReservationFormAdvanced /></PrivateRoute>} />
         <Route path="/reservations-advanced" element={<PrivateRoute><ReservationsAdvanced /></PrivateRoute>} />
-        <Route path="/reservations-simple" element={<PrivateRoute><ReservationsPageSimple /></PrivateRoute>} />
+        <Route path="/reservations-simple" element={<PrivateRoute><ReservationsPageSimplePro /></PrivateRoute>} />
         <Route path="/calendar" element={<PrivateRoute><CalendarPageSimple /></PrivateRoute>} />
         <Route path="/calendar-improved" element={<PrivateRoute><CalendarPageImproved /></PrivateRoute>} />
         <Route path="/calendar-demo" element={<PrivateRoute><CalendarFeaturesDemo /></PrivateRoute>} />

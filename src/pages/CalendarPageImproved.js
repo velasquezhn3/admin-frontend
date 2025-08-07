@@ -162,37 +162,91 @@ const CalendarPageImproved = () => {
   };
 
   const applyFilters = () => {
+    console.log('[DEBUG] Aplicando filtros:', filters);
+    console.log('[DEBUG] Cabañas disponibles:', cabanas);
+    console.log('[DEBUG] Reservas disponibles:', reservas);
+    
     let filtered = [...cabanas];
     
+    // Filtro por tipo de cabaña
     if (filters.tipoCabana) {
-      filtered = filtered.filter(cabana => 
-        getCabinType(cabana.nombre).toLowerCase().includes(filters.tipoCabana.toLowerCase())
-      );
-    }
-    
-    if (filters.estado) {
-      // Filtrar cabañas que tengan al menos una reserva en el estado seleccionado
       filtered = filtered.filter(cabana => {
-        return reservas.some(reserva => 
-          reserva.cabanaId === cabana.id && reserva.estado === filters.estado
-        );
+        const tipoCabana = getCabinType(cabana.nombre);
+        // Comparación exacta como en /cabins, pero manteniendo case-insensitive
+        const tipoFiltro = filters.tipoCabana.toLowerCase();
+        const tipoCabanaLower = tipoCabana.toLowerCase();
+        
+        const coincide = tipoCabanaLower === tipoFiltro;
+        console.log(`[DEBUG] Cabaña "${cabana.nombre}": tipo detectado "${tipoCabana}", filtro "${filters.tipoCabana}", coincide: ${coincide}`);
+        return coincide;
       });
     }
     
-    if (filters.capacidad) {
-      filtered = filtered.filter(cabana => 
-        cabana.capacidad >= parseInt(filters.capacidad)
-      );
+    // Filtro por estado de reservas
+    if (filters.estado) {
+      filtered = filtered.filter(cabana => {
+        // Verificar si la cabaña tiene reservas en el estado seleccionado
+        const tieneReservaConEstado = reservas.some(reserva => {
+          const coincideId = reserva.cabanaId === cabana.id || reserva.cabanaId === cabana.id.toString();
+          const coincideEstado = reserva.estado && reserva.estado.toLowerCase() === filters.estado.toLowerCase();
+          return coincideId && coincideEstado;
+        });
+        
+        // También verificar si hay ocupación directa en el estado seleccionado
+        const tieneOcupacionConEstado = ocupacion && Object.keys(ocupacion).some(key => {
+          const [cabinId] = key.split('-');
+          const estadoOcupacion = ocupacion[key];
+          const coincideId = cabinId === cabana.id.toString();
+          const coincideEstado = estadoOcupacion && estadoOcupacion.toLowerCase() === filters.estado.toLowerCase();
+          return coincideId && coincideEstado;
+        });
+        
+        console.log(`[DEBUG] Cabaña ${cabana.nombre}: tiene reserva con estado ${filters.estado}: ${tieneReservaConEstado || tieneOcupacionConEstado}`);
+        return tieneReservaConEstado || tieneOcupacionConEstado;
+      });
     }
     
+    // Filtro por capacidad
+    if (filters.capacidad) {
+      filtered = filtered.filter(cabana => {
+        const capacidadCabana = parseInt(cabana.capacidad) || 0;
+        const capacidadMinima = parseInt(filters.capacidad);
+        const cumpleCapacidad = capacidadCabana >= capacidadMinima;
+        console.log(`[DEBUG] Cabaña ${cabana.nombre}: capacidad ${capacidadCabana}, mínima ${capacidadMinima}, cumple: ${cumpleCapacidad}`);
+        return cumpleCapacidad;
+      });
+    }
+    
+    console.log('[DEBUG] Cabañas filtradas:', filtered);
     setFilteredCabanas(filtered);
   };
 
   const getCabinType = (nombre) => {
-    if (nombre.toLowerCase().includes('tortuga')) return 'Tortuga';
-    if (nombre.toLowerCase().includes('delfin')) return 'Delfín';
-    if (nombre.toLowerCase().includes('tiburon')) return 'Tiburón';
-    return 'Otro';
+    if (!nombre) return 'otro';
+    
+    const nombreLower = nombre.toLowerCase();
+    
+    // Verificar cada tipo de cabaña - usando formato minúsculas sin acentos como en /cabins
+    if (nombreLower.includes('tortuga')) return 'tortuga';
+    if (nombreLower.includes('delfin') || nombreLower.includes('delfín')) return 'delfin';
+    if (nombreLower.includes('tiburon') || nombreLower.includes('tiburón')) return 'tiburon';
+    if (nombreLower.includes('caracol')) return 'caracol';
+    
+    // Intentar con patrones más específicos usando regex
+    const patterns = [
+      { pattern: /tortuga/i, type: 'tortuga' },
+      { pattern: /delfín?/i, type: 'delfin' },
+      { pattern: /tiburón?/i, type: 'tiburon' },
+      { pattern: /caracol/i, type: 'caracol' }
+    ];
+    
+    for (const { pattern, type } of patterns) {
+      if (pattern.test(nombre)) {
+        return type;
+      }
+    }
+    
+    return 'otro';
   };
 
   const navigateMonth = (direction) => {
@@ -703,6 +757,7 @@ const CalendarPageImproved = () => {
                 <MenuItem value="tortuga">Tortuga</MenuItem>
                 <MenuItem value="delfin">Delfín</MenuItem>
                 <MenuItem value="tiburon">Tiburón</MenuItem>
+                <MenuItem value="caracol">Caracol</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -716,9 +771,10 @@ const CalendarPageImproved = () => {
                 onChange={(e) => setFilters(prev => ({ ...prev, estado: e.target.value }))}
               >
                 <MenuItem value="">Todos</MenuItem>
-                <MenuItem value="confirmado">Confirmado</MenuItem>
+                <MenuItem value="confirmada">Confirmada</MenuItem>
                 <MenuItem value="pendiente">Pendiente</MenuItem>
                 <MenuItem value="cancelada">Cancelada</MenuItem>
+                <MenuItem value="libre">Libre</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -736,6 +792,23 @@ const CalendarPageImproved = () => {
           </Grid>
           
           <Grid item xs={12} sm={6} md={3}>
+            <Button
+              variant="outlined"
+              fullWidth
+              onClick={() => {
+                setFilters({
+                  tipoCabana: '',
+                  estado: '',
+                  capacidad: ''
+                });
+              }}
+              sx={{ height: 40 }}
+            >
+              Limpiar Filtros
+            </Button>
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={3}>
             <FormControlLabel
               control={
                 <Switch
@@ -747,6 +820,16 @@ const CalendarPageImproved = () => {
             />
           </Grid>
         </Grid>
+        
+        {/* Indicador de filtros aplicados */}
+        <Box sx={{ mt: 2, mb: 1 }}>
+          <Typography variant="body2" color="text.secondary">
+            Mostrando {filteredCabanas.length} de {cabanas.length} cabañas
+            {(filters.tipoCabana || filters.estado || filters.capacidad) && (
+              <span> (filtros aplicados)</span>
+            )}
+          </Typography>
+        </Box>
         
         {/* Estadísticas rápidas */}
         <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid', borderColor: 'divider' }}>

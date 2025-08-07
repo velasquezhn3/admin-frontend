@@ -10,4 +10,13 @@ module.exports = function(app) {
       logLevel: 'debug'
     })
   );
+  
+  app.use(
+    '/auth',
+    createProxyMiddleware({
+      target: 'http://localhost:4000',
+      changeOrigin: true,
+      logLevel: 'debug'
+    })
+  );
 };

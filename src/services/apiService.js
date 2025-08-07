@@ -83,6 +83,76 @@ class ApiService {
       ];
     }
 
+    if (baseEndpoint === '/admin/activities') {
+      return {
+        success: true,
+        activities: [
+          {
+            activity_id: 1,
+            activity_key: 'act1',
+            nombre: 'Senderismo en Punta Sal',
+            descripcion: 'Caminata guiada por los senderos naturales con vistas panorámicas del océano.',
+            categoria: 'Aventura',
+            duracion: '3 horas',
+            capacidad_maxima: 12,
+            precios: {
+              adulto: 800,
+              niño: 400
+            },
+            ubicacion: {
+              lugar: 'Punta Sal',
+              coordenadas: { lat: -4.123, lng: -81.045 }
+            },
+            contacto: {
+              whatsapp: '+51987654321',
+              email: 'actividades@villasjulie.com'
+            },
+            multimedia: [
+              'https://example.com/senderismo1.jpg',
+              'https://example.com/senderismo2.jpg'
+            ],
+            activo: true,
+            incluir_en_menu: true,
+            orden_menu: 1,
+            created_at: '2025-01-15T08:00:00Z',
+            updated_at: '2025-01-15T08:00:00Z'
+          },
+          {
+            activity_id: 2,
+            activity_key: 'act2',
+            nombre: 'Restaurante Mirador Las Playas',
+            descripcion: 'Disfruta de la mejor gastronomía local con vista al mar en nuestro restaurante mirador.',
+            categoria: 'Gastronomía',
+            duracion: '2 horas',
+            capacidad_maxima: 40,
+            precios: {
+              adulto: 1200,
+              niño: 600,
+              menu_ejecutivo: 850
+            },
+            ubicacion: {
+              lugar: 'Mirador Las Playas',
+              coordenadas: { lat: -4.127, lng: -81.042 }
+            },
+            contacto: {
+              whatsapp: '+51987654322',
+              email: 'restaurante@villasjulie.com'
+            },
+            multimedia: [
+              'https://example.com/restaurante1.jpg',
+              'https://example.com/restaurante2.jpg',
+              'https://example.com/menu.pdf'
+            ],
+            activo: true,
+            incluir_en_menu: true,
+            orden_menu: 2,
+            created_at: '2025-01-20T10:00:00Z',
+            updated_at: '2025-01-20T10:00:00Z'
+          }
+        ]
+      };
+    }
+
     if (baseEndpoint === '/admin/reservations') {
       return {
         success: true,
@@ -339,6 +409,13 @@ class ApiService {
     return this.request(`/admin/users/${id}`, {
       method: 'PUT',
       body: JSON.stringify(user),
+    });
+  }
+
+  // Endpoint para actualizar estados de usuarios basado en reservas
+  async updateUserStatesBasedOnReservations() {
+    return this.request('/admin/users/update-states', {
+      method: 'POST',
     });
   }
 

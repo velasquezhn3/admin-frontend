@@ -23,6 +23,7 @@ import {
   TrendingUp as TrendingUpIcon,
   Category as CategoryIcon,
   SupervisorAccount as AdminIcon,
+  LocalActivity as ActivitiesIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -78,6 +79,13 @@ const menuItems = [
     path: '/cabin-types',
     color: '#10b981',
     badge: 'WhatsApp'
+  },
+  {
+    text: 'Actividades',
+    icon: <ActivitiesIcon />,
+    path: '/activities',
+    color: '#f59e0b',
+    badge: 'Nuevo'
   },
   {
     text: 'Administradores',

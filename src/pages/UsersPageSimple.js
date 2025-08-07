@@ -22,6 +22,12 @@ import {
   TextField,
   Grid,
   Avatar,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
+  Tooltip,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -29,12 +35,17 @@ import {
   Delete as DeleteIcon,
   Refresh as RefreshIcon,
   Person as PersonIcon,
+  FilterList as FilterIcon,
+  Clear as ClearIcon,
+  CalendarToday as ReservationIcon,
 } from '@mui/icons-material';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 import apiService from '../services/apiService';
 
 const UsersPageSimple = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -46,22 +57,135 @@ const UsersPageSimple = () => {
     is_active: true
   });
 
+  // Estados para filtros
+  const [filters, setFilters] = useState({
+    estado: '',
+    rol: '',
+    busqueda: '',
+    tieneReservas: ''
+  });
+
   useEffect(() => {
-    fetchUsers();
+    fetchData();
   }, []);
 
-  const fetchUsers = async () => {
+  useEffect(() => {
+    applyFilters();
+  }, [users, filters]);
+
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await apiService.getUsers();
-      setUsers((data && Array.isArray(data)) ? data : (data && data.data ? data.data : []));
+      const [usersData, reservationsData] = await Promise.all([
+        apiService.getUsers(),
+        apiService.getReservations()
+      ]);
+      
+      const processedUsers = (usersData && Array.isArray(usersData)) ? usersData : (usersData && usersData.data ? usersData.data : []);
+      const processedReservations = (reservationsData && Array.isArray(reservationsData)) ? reservationsData : (reservationsData && reservationsData.data ? reservationsData.data : []);
+      
+      // Actualizar estados de usuarios basado en reservas
+      const updatedUsers = await updateUserStates(processedUsers, processedReservations);
+      
+      setUsers(updatedUsers);
+      setReservations(processedReservations);
       setError(null);
     } catch (err) {
-      console.error('Error fetching users:', err);
-      setError('Error al cargar los usuarios');
+      console.error('Error fetching data:', err);
+      setError('Error al cargar los datos');
     } finally {
       setLoading(false);
     }
+  };
+
+  const updateUserStates = async (usersList, reservationsList) => {
+    const currentDate = new Date();
+    
+    return usersList.map(user => {
+      // Buscar reservas del usuario
+      const userReservations = reservationsList.filter(res => 
+        res.user_id === user.user_id || res.user_id === user.user_id.toString()
+      );
+      
+      if (userReservations.length === 0) {
+        // Sin reservas = inactivo
+        return { ...user, is_active: false, reservation_status: 'sin_reservas' };
+      }
+      
+      // Verificar si tiene reservas activas o futuras
+      const hasActiveReservations = userReservations.some(res => {
+        const endDate = new Date(res.end_date);
+        // Estados válidos en español e inglés
+        const validStates = ['confirmado', 'confirmada', 'pendiente', 'pending', 'confirmed'];
+        const isActiveStatus = validStates.includes((res.status || '').toLowerCase());
+        const isFutureOrCurrent = endDate >= currentDate;
+        
+        return isActiveStatus && isFutureOrCurrent;
+      });
+      
+      return {
+        ...user,
+        is_active: hasActiveReservations,
+        reservation_status: hasActiveReservations ? 'con_reservas_activas' : 'reservas_vencidas',
+        total_reservations: userReservations.length
+      };
+    });
+  };
+
+  const applyFilters = () => {
+    let filtered = [...users];
+
+    console.log('[DEBUG] Aplicando filtros de usuarios:', filters);
+    console.log('[DEBUG] Total usuarios:', filtered.length);
+
+    // Filtro por estado
+    if (filters.estado) {
+      filtered = filtered.filter(user => {
+        const isActive = user.is_active;
+        const matchesFilter = (filters.estado === 'activo') ? isActive : !isActive;
+        console.log(`[DEBUG] Usuario ${user.name}: activo=${isActive}, filtro=${filters.estado}, coincide=${matchesFilter}`);
+        return matchesFilter;
+      });
+    }
+
+    // Filtro por rol
+    if (filters.rol) {
+      filtered = filtered.filter(user => {
+        const userRole = (user.role || 'guest').toLowerCase();
+        const filterRole = filters.rol.toLowerCase();
+        return userRole === filterRole;
+      });
+    }
+
+    // Filtro por búsqueda (nombre o teléfono)
+    if (filters.busqueda) {
+      const searchTerm = filters.busqueda.toLowerCase();
+      filtered = filtered.filter(user => {
+        const name = (user.name || '').toLowerCase();
+        const phone = (user.phone_number || '').toLowerCase();
+        return name.includes(searchTerm) || phone.includes(searchTerm);
+      });
+    }
+
+    // Filtro por reservas
+    if (filters.tieneReservas) {
+      filtered = filtered.filter(user => {
+        const hasReservations = user.total_reservations > 0;
+        return (filters.tieneReservas === 'con_reservas') ? hasReservations : !hasReservations;
+      });
+    }
+
+    console.log('[DEBUG] Usuarios filtrados:', filtered.length);
+    setFilteredUsers(filtered);
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      estado: '',
+      rol: '',
+      busqueda: '',
+      tieneReservas: ''
+    });
   };
 
   const handleOpenDialog = (user = null) => {
@@ -96,11 +220,26 @@ const UsersPageSimple = () => {
       } else {
         await apiService.createUser(formData);
       }
-      await fetchUsers();
+      await fetchData(); // Cambié fetchUsers por fetchData
       handleCloseDialog();
     } catch (err) {
       console.error('Error saving user:', err);
       setError('Error al guardar el usuario');
+    }
+  };
+
+  const handleUpdateUserStates = async () => {
+    try {
+      setLoading(true);
+      // Llamar endpoint para actualizar estados automáticamente
+      await apiService.updateUserStatesBasedOnReservations();
+      await fetchData();
+      setError(null);
+    } catch (err) {
+      console.error('Error updating user states:', err);
+      setError('Error al actualizar estados de usuarios');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,16 +258,25 @@ const UsersPageSimple = () => {
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" sx={{ fontWeight: 700 }}>
-            Usuarios
+            Usuarios ({filteredUsers.length})
           </Typography>
           <Box>
             <Button
               startIcon={<RefreshIcon />}
-              onClick={fetchUsers}
+              onClick={fetchData}
               sx={{ mr: 2 }}
               disabled={loading}
             >
               Actualizar
+            </Button>
+            <Button
+              startIcon={<ReservationIcon />}
+              onClick={handleUpdateUserStates}
+              sx={{ mr: 2 }}
+              disabled={loading}
+              variant="outlined"
+            >
+              Actualizar Estados
             </Button>
             <Button
               variant="contained"
@@ -139,6 +287,83 @@ const UsersPageSimple = () => {
             </Button>
           </Box>
         </Box>
+
+        {/* Panel de Filtros */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <FilterIcon sx={{ mr: 1 }} />
+              <Typography variant="h6">Filtros</Typography>
+              <Button
+                startIcon={<ClearIcon />}
+                onClick={clearFilters}
+                sx={{ ml: 'auto' }}
+                size="small"
+              >
+                Limpiar Filtros
+              </Button>
+            </Box>
+            
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={3}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Estado</InputLabel>
+                  <Select
+                    value={filters.estado}
+                    label="Estado"
+                    onChange={(e) => setFilters({ ...filters, estado: e.target.value })}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="activo">Activo</MenuItem>
+                    <MenuItem value="inactivo">Inactivo</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={3}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Rol</InputLabel>
+                  <Select
+                    value={filters.rol}
+                    label="Rol"
+                    onChange={(e) => setFilters({ ...filters, rol: e.target.value })}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="guest">Guest</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                    <MenuItem value="manager">Manager</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={3}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Reservas</InputLabel>
+                  <Select
+                    value={filters.tieneReservas}
+                    label="Reservas"
+                    onChange={(e) => setFilters({ ...filters, tieneReservas: e.target.value })}
+                  >
+                    <MenuItem value="">Todos</MenuItem>
+                    <MenuItem value="con_reservas">Con Reservas</MenuItem>
+                    <MenuItem value="sin_reservas">Sin Reservas</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={3}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  label="Buscar"
+                  placeholder="Nombre o teléfono..."
+                  value={filters.busqueda}
+                  onChange={(e) => setFilters({ ...filters, busqueda: e.target.value })}
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
 
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
@@ -152,22 +377,27 @@ const UsersPageSimple = () => {
               <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
                 <CircularProgress />
               </Box>
-            ) : users.length === 0 ? (
+            ) : filteredUsers.length === 0 ? (
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <PersonIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
                 <Typography variant="h6" color="text.secondary">
-                  No hay usuarios registrados
+                  {users.length === 0 ? 'No hay usuarios registrados' : 'No hay usuarios que coincidan con los filtros'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Comienza agregando el primer usuario al sistema
+                  {users.length === 0 
+                    ? 'Comienza agregando el primer usuario al sistema'
+                    : 'Intenta ajustar los filtros para ver más resultados'
+                  }
                 </Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  onClick={() => handleOpenDialog()}
-                >
-                  Crear Primer Usuario
-                </Button>
+                {users.length === 0 && (
+                  <Button
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                    onClick={() => handleOpenDialog()}
+                  >
+                    Crear Primer Usuario
+                  </Button>
+                )}
               </Box>
             ) : (
               <TableContainer component={Paper} elevation={0}>
@@ -179,12 +409,13 @@ const UsersPageSimple = () => {
                       <TableCell><strong>Teléfono</strong></TableCell>
                       <TableCell><strong>Rol</strong></TableCell>
                       <TableCell><strong>Estado</strong></TableCell>
+                      <TableCell><strong>Reservas</strong></TableCell>
                       <TableCell><strong>Fecha Registro</strong></TableCell>
                       <TableCell><strong>Acciones</strong></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                       <TableRow key={user.user_id}>
                         <TableCell>{user.user_id}</TableCell>
                         <TableCell>
@@ -200,14 +431,47 @@ const UsersPageSimple = () => {
                           </Box>
                         </TableCell>
                         <TableCell>{user.phone_number || '-'}</TableCell>
-                        <TableCell>{user.role || 'guest'}</TableCell>
                         <TableCell>
-                          <Typography
-                            variant="body2"
-                            color={user.is_active ? 'success.main' : 'text.secondary'}
-                            fontWeight="medium"
-                          >
-                            {user.is_active ? 'Activo' : 'Inactivo'}
+                          <Chip
+                            label={user.role || 'guest'}
+                            size="small"
+                            color={user.role === 'admin' ? 'primary' : 'default'}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Chip
+                              label={user.is_active ? 'Activo' : 'Inactivo'}
+                              size="small"
+                              color={user.is_active ? 'success' : 'default'}
+                            />
+                            {user.reservation_status && (
+                              <Tooltip title={
+                                user.reservation_status === 'con_reservas_activas' ? 'Tiene reservas activas/futuras' :
+                                user.reservation_status === 'reservas_vencidas' ? 'Solo tiene reservas vencidas' :
+                                'Sin reservas'
+                              }>
+                                <Chip
+                                  label={
+                                    user.reservation_status === 'con_reservas_activas' ? 'Activas' :
+                                    user.reservation_status === 'reservas_vencidas' ? 'Vencidas' :
+                                    'Sin reservas'
+                                  }
+                                  size="small"
+                                  variant="outlined"
+                                  color={
+                                    user.reservation_status === 'con_reservas_activas' ? 'info' :
+                                    user.reservation_status === 'reservas_vencidas' ? 'warning' :
+                                    'default'
+                                  }
+                                />
+                              </Tooltip>
+                            )}
+                          </Box>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2">
+                            {user.total_reservations || 0} reservas
                           </Typography>
                         </TableCell>
                         <TableCell>{formatDate(user.created_at)}</TableCell>
