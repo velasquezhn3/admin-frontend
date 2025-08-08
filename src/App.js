@@ -19,6 +19,10 @@ import ActivitiesPage from './pages/ActivitiesPage';
 import ConversationStatesPage from './pages/ConversationStatesPage';
 import CabinTypesPage from './pages/CabinTypesPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import QueueDashboard from './pages/QueueDashboard';
+import QueueDashboardFixed from './pages/QueueDashboardFixed';
+import QueueDashboardTest from './pages/QueueDashboardTest';
+import SystemMonitoringDashboard from './pages/SystemMonitoringDashboard';
 import PrivateRoute from './components/PrivateRoute';
 import ConnectionTest from './components/ConnectionTest';
 import TestDashboard from './pages/TestDashboard';
@@ -146,6 +150,10 @@ function App() {
         <Route path="/cabin-types" element={<PrivateRoute><CabinTypesPage /></PrivateRoute>} />
         <Route path="/admin-users" element={<PrivateRoute><AdminUsersPage /></PrivateRoute>} />
         <Route path="/conversation-states" element={<PrivateRoute><ConversationStatesPage /></PrivateRoute>} />
+        <Route path="/queue-dashboard" element={<PrivateRoute><QueueDashboardFixed /></PrivateRoute>} />
+        <Route path="/queue-test" element={<PrivateRoute><QueueDashboardTest /></PrivateRoute>} />
+        <Route path="/queue-old" element={<PrivateRoute><QueueDashboard /></PrivateRoute>} />
+        <Route path="/system-monitoring" element={<PrivateRoute><SystemMonitoringDashboard /></PrivateRoute>} />
         <Route path="/test-connection" element={<ConnectionTest />} />
         <Route path="/test-dashboard" element={<TestDashboard />} />
         <Route path="*" element={<Navigate to="/" replace />} />

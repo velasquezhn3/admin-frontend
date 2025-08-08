@@ -24,6 +24,8 @@ import {
   Category as CategoryIcon,
   SupervisorAccount as AdminIcon,
   LocalActivity as ActivitiesIcon,
+  Queue as QueueIcon,
+  Monitor as MonitorIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -86,6 +88,20 @@ const menuItems = [
     path: '/activities',
     color: '#f59e0b',
     badge: 'Nuevo'
+  },
+  {
+    text: 'Cola WhatsApp',
+    icon: <QueueIcon />,
+    path: '/queue-dashboard',
+    color: '#06b6d4',
+    badge: 'Sistema'
+  },
+  {
+    text: 'Dashboard Sistema',
+    icon: <MonitorIcon />,
+    path: '/system-monitoring',
+    color: '#8b5cf6',
+    badge: 'Monitor'
   },
   {
     text: 'Administradores',
