@@ -2,10 +2,11 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
   app.use(
     '/admin',
     createProxyMiddleware({
-      target: 'http://localhost:4000',
+      target: API_URL,
       changeOrigin: true,
       logLevel: 'debug'
     })
@@ -14,7 +15,7 @@ module.exports = function(app) {
   app.use(
     '/auth',
     createProxyMiddleware({
-      target: 'http://localhost:4000',
+      target: API_URL,
       changeOrigin: true,
       logLevel: 'debug'
     })
@@ -23,7 +24,7 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:4000',
+      target: API_URL,
       changeOrigin: true,
       logLevel: 'debug'
     })

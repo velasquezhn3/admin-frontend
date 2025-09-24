@@ -66,7 +66,7 @@ const DashboardAnalytics = () => {
   const [userBehavior, setUserBehavior] = useState(null);
   const [trends, setTrends] = useState(null);
 
-  const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+  const API_BASE = process.env.REACT_APP_API_URL;
 
   // Obtener token de localStorage
   const getAuthToken = () => {
@@ -90,11 +90,11 @@ const DashboardAnalytics = () => {
 
     try {
       const [metricsRes, revenueRes, occupancyRes, usersRes, trendsRes] = await Promise.all([
-        fetch(`${API_BASE}/admin/dashboard`, { headers: getAuthHeaders() }),
-        fetch(`${API_BASE}/admin/dashboard/revenue?period=${period}`, { headers: getAuthHeaders() }),
-        fetch(`${API_BASE}/admin/dashboard/occupancy`, { headers: getAuthHeaders() }),
-        fetch(`${API_BASE}/admin/dashboard/users`, { headers: getAuthHeaders() }),
-        fetch(`${API_BASE}/admin/dashboard/trends`, { headers: getAuthHeaders() })
+  fetch(`${API_BASE}/admin/dashboard`, { headers: getAuthHeaders() }),
+  fetch(`${API_BASE}/admin/dashboard/revenue?period=${period}`, { headers: getAuthHeaders() }),
+  fetch(`${API_BASE}/admin/dashboard/occupancy`, { headers: getAuthHeaders() }),
+  fetch(`${API_BASE}/admin/dashboard/users`, { headers: getAuthHeaders() }),
+  fetch(`${API_BASE}/admin/dashboard/trends`, { headers: getAuthHeaders() })
       ]);
 
       if (!metricsRes.ok || !revenueRes.ok || !occupancyRes.ok || !usersRes.ok || !trendsRes.ok) {

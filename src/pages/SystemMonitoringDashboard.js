@@ -384,10 +384,10 @@ const SystemMonitoringDashboard = () => {
                         {!connectionError && <Chip label="✅ Conectado" color="success" size="small" sx={{ ml: 1 }} />}
                       </Typography>
                       <Typography variant="body2" paragraph>
-                        <strong>Admin Server:</strong> http://localhost:4000
+                        <strong>Admin Server:</strong> {process.env.REACT_APP_API_URL}
                       </Typography>
                       <Typography variant="body2" paragraph>
-                        <strong>Frontend React:</strong> http://localhost:3000
+                        <strong>Frontend React:</strong> {window.location.origin}
                       </Typography>
                       <Typography variant="body2" paragraph>
                         <strong>Actualización:</strong> Cada 5 segundos

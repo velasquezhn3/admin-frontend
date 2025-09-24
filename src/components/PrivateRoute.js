@@ -13,7 +13,8 @@ const PrivateRoute = ({ children }) => {
       // Si no hay token, crear uno temporal para desarrollo
       if (!token) {
         try {
-          const response = await fetch('http://localhost:4000/auth/login', {
+          const API_BASE = process.env.REACT_APP_API_URL;
+          const response = await fetch(`${API_BASE}/auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

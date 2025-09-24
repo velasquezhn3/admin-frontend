@@ -48,7 +48,7 @@ const DashboardSimple = () => {
         // Intentar obtener datos reales del backend
         const token = localStorage.getItem('adminToken') || 'admin-temp-token';
         
-        const response = await fetch('http://localhost:4000/admin/reservations', {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/reservations`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

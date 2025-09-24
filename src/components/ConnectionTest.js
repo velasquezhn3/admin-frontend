@@ -42,7 +42,7 @@ const ConnectionTest = () => {
   };
 
   const testDirectBackend = async () => {
-    const response = await fetch('http://localhost:4000/test');
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/test`);
     const data = await response.json();
     return data;
   };
@@ -54,7 +54,7 @@ const ConnectionTest = () => {
   };
 
   const testLogin = async () => {
-    const response = await fetch('http://localhost:4000/auth/login', {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -70,7 +70,7 @@ const ConnectionTest = () => {
 
   const testReservations = async () => {
     // Primero hacer login para obtener token
-    const loginResponse = await fetch('http://localhost:4000/auth/login', {
+  const loginResponse = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -89,7 +89,7 @@ const ConnectionTest = () => {
     const token = loginData.data.token;
     
     // Ahora hacer la consulta de reservas con el token
-    const response = await fetch('http://localhost:4000/admin/reservations/upcoming', {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/reservations/upcoming`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -100,7 +100,7 @@ const ConnectionTest = () => {
 
   const testAllReservations = async () => {
     // Primero hacer login para obtener token
-    const loginResponse = await fetch('http://localhost:4000/auth/login', {
+  const loginResponse = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ const ConnectionTest = () => {
     const token = loginData.data.token;
     
     // Consultar todas las reservas
-    const response = await fetch('http://localhost:4000/admin/reservations?limit=10', {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/reservations?limit=10`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -130,7 +130,7 @@ const ConnectionTest = () => {
 
   const testDashboard = async () => {
     // Primero hacer login para obtener token
-    const loginResponse = await fetch('http://localhost:4000/auth/login', {
+  const loginResponse = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -149,7 +149,7 @@ const ConnectionTest = () => {
     const token = loginData.data.token;
     
     // Consultar dashboard
-    const response = await fetch('http://localhost:4000/admin/dashboard', {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/dashboard`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -213,7 +213,7 @@ const ConnectionTest = () => {
           {
             key: 'direct_backend',
             title: 'Backend Directo',
-            description: 'http://localhost:4000/test',
+            description: `${process.env.REACT_APP_API_URL}/test`,
             test: testDirectBackend
           },
           {

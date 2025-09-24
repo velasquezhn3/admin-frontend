@@ -61,13 +61,14 @@ const ReservationsDebugTest = () => {
 
   const testAll = async () => {
     setResults({});
-    await testEndpoint('test', 'http://localhost:4000/test');
-    await testEndpoint('login', 'http://localhost:4000/auth/login', 'POST', {
+    const API_URL = process.env.REACT_APP_API_URL;
+    await testEndpoint('test', `${API_URL}/test`);
+    await testEndpoint('login', `${API_URL}/auth/login`, 'POST', {
       username: 'admin',
       password: 'admin123'
     });
-    await testEndpoint('upcoming', 'http://localhost:4000/admin/reservations/upcoming');
-    await testEndpoint('general', 'http://localhost:4000/admin/reservations');
+    await testEndpoint('upcoming', `${API_URL}/admin/reservations/upcoming`);
+    await testEndpoint('general', `${API_URL}/admin/reservations`);
   };
 
   return (
@@ -90,7 +91,7 @@ const ReservationsDebugTest = () => {
           
           <Button 
             variant="outlined" 
-            onClick={() => testEndpoint('upcoming', 'http://localhost:4000/admin/reservations/upcoming')}
+            onClick={() => testEndpoint('upcoming', `${process.env.REACT_APP_API_URL}/admin/reservations/upcoming`)}
             disabled={loading}
             fullWidth
             size="small"

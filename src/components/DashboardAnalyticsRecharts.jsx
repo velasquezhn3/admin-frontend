@@ -173,12 +173,13 @@ const DashboardAnalytics = () => {
       console.log('🔍 Fetching analytics data with timeRange:', timeRange);
 
       // Fetch all analytics endpoints
+      const API_BASE = process.env.REACT_APP_API_URL;
       const [dashboardRes, revenueRes, occupancyRes, usersRes, trendsRes] = await Promise.all([
-        fetch('/admin/dashboard', { headers }),
-        fetch(`/admin/dashboard/revenue?period=${timeRange}`, { headers }),
-        fetch(`/admin/dashboard/occupancy?period=${timeRange}`, { headers }),
-        fetch(`/admin/dashboard/users?period=${timeRange}`, { headers }),
-        fetch('/admin/dashboard/trends', { headers })
+        fetch(`${API_BASE}/admin/dashboard`, { headers }),
+        fetch(`${API_BASE}/admin/dashboard/revenue?period=${timeRange}`, { headers }),
+        fetch(`${API_BASE}/admin/dashboard/occupancy?period=${timeRange}`, { headers }),
+        fetch(`${API_BASE}/admin/dashboard/users?period=${timeRange}`, { headers }),
+        fetch(`${API_BASE}/admin/dashboard/trends`, { headers })
       ]);
 
       console.log('📊 Response statuses:', {

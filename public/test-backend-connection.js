@@ -3,13 +3,14 @@ console.log('🔍 PROBANDO CONEXIÓN FRONTEND -> BACKEND');
 
 async function testFrontendConnection() {
   try {
-    console.log('1. Probando endpoint de test...');
-    const testResponse = await fetch('http://localhost:4000/test');
+  const API_URL = window.API_URL || 'http://localhost:4000';
+  console.log('1. Probando endpoint de test...');
+  const testResponse = await fetch(`${API_URL}/test`);
     const testData = await testResponse.json();
     console.log('✅ Test endpoint:', testData);
 
     console.log('\n2. Probando login...');
-    const loginResponse = await fetch('http://localhost:4000/auth/login', {
+    const loginResponse = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -27,7 +28,7 @@ async function testFrontendConnection() {
       const token = loginData.data.token;
       console.log('\n3. Probando endpoint de reservas con token...');
       
-      const reservasResponse = await fetch('http://localhost:4000/admin/reservations', {
+      const reservasResponse = await fetch(`${API_URL}/admin/reservations`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

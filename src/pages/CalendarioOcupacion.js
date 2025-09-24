@@ -13,7 +13,7 @@ export default function CalendarioOcupacion() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:4000/admin/calendar-occupancy?year=${year}&month=${month}`)
+  fetch(`${process.env.REACT_APP_API_URL}/admin/calendar-occupancy?year=${year}&month=${month}`)
       .then(res => res.json())
       .then(data => {
         setCabanas(data.cabanas || []);
